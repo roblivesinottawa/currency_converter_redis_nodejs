@@ -4,9 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Currency Converter!</title>
-    <link
+    <!-- <link
       rel="stylesheet"
       href="[https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css](https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css)"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
     />
   </head>
 
@@ -22,7 +28,7 @@
           <blockquote>
             BASE RATE IS <strong>USD</strong>. GET HISTORICAL RATES FOR ANY DAY
             SINCE 1999. THANKS TO
-            <a href="[http://fixer.io/](http://fixer.io/)">FIXER.IO</a>
+            <a href="https://fixer.io/">FIXER.IO</a>
           </blockquote>
         </div>
 
@@ -58,7 +64,48 @@
         <div class="columns is-multiline is-mobile" id="results"></div>
       </div>
     </section>
-    <script src="[https://unpkg.com/axios/dist/axios.min.js](https://unpkg.com/axios/dist/axios.min.js)"></script>
-    <script src="../app.js"></script>
+    <!-- <script src="[https://unpkg.com/axios/dist/axios.min.js](https://unpkg.com/axios/dist/axios.min.js)"></script> -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script src="../app.js"></script> -->
+    <script>
+      const datePicker = document.querySelector("#rateDate");
+      const form = document.querySelector("#rateForm");
+      const submitButton = document.querySelector("#rateForm button");
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        submitButton.classList.add("is-loading");
+
+        const date = datePicker.value;
+        const url = `/rate/${date}`;
+
+        axios
+          .get(url)
+          .then((res) => {
+            submitButton.classList.remove("is-loading");
+            showRates(res.data.rates);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      };
+
+      const showRates = (rates) => {
+        let html = "";
+
+        for (rate in rates) {
+          html +=
+            '<div class="column is-one-quarter"><div class="card"><div class="card-content">';
+          html += `<p class="title">${rates[rate]}</p><p class="subtitle">${rate}</p>`;
+          htnl += "</div></div></div>";
+        }
+
+        document.querySelector("#results").innerHTML = html;
+      };
+
+      (function() {
+        datePicker.valueAsDate = new Date();
+      })();
+    </script>
   </body>
 </html>

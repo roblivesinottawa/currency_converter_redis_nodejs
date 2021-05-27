@@ -14,6 +14,7 @@
       integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="index.css" />
   </head>
 
   <body>
@@ -71,10 +72,12 @@
       const datePicker = document.querySelector("#rateDate");
       const form = document.querySelector("#rateForm");
       const submitButton = document.querySelector("#rateForm button");
+      const visitsDiv = document.querySelector("#visits-count");
 
       form.onsubmit = (e) => {
         e.preventDefault();
         submitButton.classList.add("is-loading");
+        visitsDiv.classList.add("is-hidden");
 
         const date = datePicker.value;
         const url = `/rate/${date}`;
@@ -84,10 +87,18 @@
           .then((res) => {
             submitButton.classList.remove("is-loading");
             showRates(res.data.rates);
+            showVisits(response.data.count, date);
           })
           .catch((error) => {
             console.log(error);
           });
+      };
+      const showVisits = (count, date) => {
+        let html = `the rates as at <strong>${date}</strong>
+        have been checked <strong>${count}</strong> time(s).
+        `;
+        visitsDiv.classList.remove("is-hidden");
+        visitsDiv.innerHTML = html;
       };
 
       const showRates = (rates) => {
